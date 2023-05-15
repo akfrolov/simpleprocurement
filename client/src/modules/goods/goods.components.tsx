@@ -18,10 +18,11 @@ import {
   Button,
   Link, required, ImageInput, ImageField
 } from "react-admin";
-import {departments, statuses} from "../../common/utils/select";
 import RequestIcon from "@mui/icons-material/RequestQuote";
 import Stack from "@mui/material/Stack";
 import React from "react";
+import {styled} from "@mui/material/styles";
+import {Box} from "@mui/material";
 
 const goodsFilters = [
   <TextInput source="search" label="Поиск" alwaysOn/>,
@@ -32,21 +33,38 @@ const goodsFilters = [
 
 const ListImage = () => {
   const { images } = useRecordContext();
-  return images.length > 0 ? <div className={'MuiBox-root css-cb34tx-RaImageField-root'}>
-    <img
-      className={'RaImageField-image'}
-      alt={images[0].title}
-      src={images[0].src}
-      title={images[0].title}
-    />
-  </div> : null;
+  return images.length > 0 ?
+    <StyledBox>
+      <img
+        title={images[0].title}
+        alt={images[0].title}
+        src={images[0].src}
+        className={'CustomImage'}
+      />
+    </StyledBox> : null;
 }
+
+const StyledBox = styled(Box, {
+  name: 'CustomImageField', //PREFIX,
+  // overridesResolver: (props, styles) => styles.root,
+})({
+  [`& .CustomList`]: {
+    display: 'flex',
+    listStyleType: 'none',
+  },
+  [`& .CustomImage`]: {
+    margin: '0.25rem',
+    width: 200,
+    height: 100,
+    objectFit: 'contain',
+  },
+});
 
 export const GoodsList = () => {
   return <List filters={goodsFilters}>
     <Datagrid rowClick="edit">
       <ListImage/>
-      {/*<ImageField source="images" src={"src"} title={"title"} label={"Изображения"} />*/}
+      {/*<ImageField  source="images" src={"src"} title={"title"} label={"Изображения"} />*/}
       <TextField source="title" label={"Название"} />
       <NumberField source="quantity" label={"Кол-во"} />
       <TextField source="units" label={"Ед. изм."} />
