@@ -1,0 +1,1 @@
+export {PartnerList} from './partners.components';
