@@ -13,7 +13,7 @@ import {
 import { stringify } from "query-string";
 import { AuthResponse, localStorageKey, rejectAuth } from "./auth-provider";
 
-const apiUrl = "http://localhost:3000/api";
+const apiUrl = "https://scs.com.kz/api";
 const httpClient = fetchUtils.fetchJson;
 
 function getAuthHeader() {

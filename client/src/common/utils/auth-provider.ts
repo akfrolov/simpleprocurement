@@ -13,7 +13,7 @@ export function rejectAuth() {
 
 export const localStorageKey = 'identity';
 
-const authUrl = "http://localhost:3000/api";
+const authUrl = "https://scs.com.kz/api";
 
 const authProvider: AuthProvider = {
   login: async ({ username, password }) => {
