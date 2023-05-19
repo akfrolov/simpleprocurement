@@ -13,7 +13,7 @@ import {
 import { stringify } from "query-string";
 import { AuthResponse, localStorageKey, rejectAuth } from "./auth-provider";
 
-const apiUrl = "https://scs.com.kz/api";
+const apiUrl = import.meta.env.PROD ? "https://scs.com.kz/api" : "http://localhost:3000/api";
 const httpClient = fetchUtils.fetchJson;
 
 function getAuthHeader() {
@@ -81,7 +81,7 @@ export default {
         console.log(e);
       }
     }
-    return rejectAuth();
+    // return rejectAuth();
   },
 
   getOne: async (resource: string, params: GetOneParams) => {
@@ -97,7 +97,7 @@ export default {
         data: json
       };
     }
-    return rejectAuth();
+    // return rejectAuth();
   },
 
   getMany: async (resource: string, params: GetManyParams) => {
@@ -113,7 +113,7 @@ export default {
       });
       return { data: json };
     }
-    return rejectAuth();
+    // return rejectAuth();
   },
 
   getManyReference: async (resource: string, params: GetManyReferenceParams) => {
@@ -138,7 +138,7 @@ export default {
       });
       return json;
     }
-    return rejectAuth();
+    // return rejectAuth();
     //   {
     //   data: json,
     //   total: parseInt(headers.get("content-range").split("/").pop(), 10)
@@ -165,7 +165,7 @@ export default {
         data: { ...params.data, id: json.id }
       };
     }
-    return rejectAuth();
+    // return rejectAuth();
   },
 
   update: async (resource: string, params: UpdateParams) => {
@@ -185,7 +185,7 @@ export default {
       });
       return { data: json };
     }
-    return rejectAuth();
+    // return rejectAuth();
   },
 
   updateMany: async (resource: string, params: UpdateManyParams) => {
@@ -202,7 +202,7 @@ export default {
       });
       return { data: json };
     }
-    return rejectAuth();
+    // return rejectAuth();
   },
 
   delete: async (resource: string, params: DeleteParams) => {
@@ -215,7 +215,7 @@ export default {
       });
       return { data: json };
     }
-    return rejectAuth();
+    // return rejectAuth();
   },
 
   deleteMany: async (resource: string, params: DeleteManyParams) => {
@@ -232,6 +232,6 @@ export default {
       });
       return { data: json };
     }
-    return rejectAuth();
+    // return rejectAuth();
   }
 };

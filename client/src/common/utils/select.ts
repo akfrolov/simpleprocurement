@@ -6,6 +6,7 @@ export const departments = [
   {id: 4, name: 'Отдел технического обслуживания (Самал)'},
   {id: 5, name: 'Отдел технического обслуживания (Завод)'},
   {id: 6, name: 'Отдел хозяйственного обслуживания (Завод)'},
+  {id: 7, name: 'Закупки'},
 ]
 
 export const statuses = (permissions: string) => {

@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Good } from "../goods/goods.schema";
-import { User } from "../users/users.schema";
-import { Partner } from "../partners/partners.schema";
+import { User } from '../users/users.schema';
+import { Partner } from '../partners/partners.schema';
 
 export type RequestDocument = HydratedDocument<Request>;
 
@@ -14,10 +13,10 @@ export class Request {
   @Prop()
   issueDate: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   initiator: User;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Partner" })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Partner' })
   supplier: Partner;
 
   @Prop()
@@ -41,7 +40,6 @@ export class Request {
   @Prop()
   status: number;
 
-
   // @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Good' }] })
   // @Prop([String])
   // goods: Good[];
@@ -50,22 +48,22 @@ export class Request {
 const RequestSchema = SchemaFactory.createForClass(Request);
 // RequestSchema.set("strict", 'throw')
 // Duplicate the ID field.
-RequestSchema.virtual('id').get(function(){
+RequestSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 
-RequestSchema.virtual('identifier').get(function(){
+RequestSchema.virtual('identifier').get(function () {
   return `PR-${this._identifier}`;
 });
 
 // Ensure virtual fields are serialised.
 RequestSchema.set('toJSON', {
-  virtuals: true
+  virtuals: true,
 });
 
 // Ensure virtual fields are serialised.
 RequestSchema.set('toObject', {
-  virtuals: true
+  virtuals: true,
 });
 
-export {RequestSchema}
+export { RequestSchema };

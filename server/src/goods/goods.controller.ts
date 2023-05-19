@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { GoodsService } from './goods.service';
 import { CreateGoodDto } from './dto/create-good.dto';
 import { UpdateGoodDto } from './dto/update-good.dto';
-import { ParseJsonPipe } from "../common/utils/parse-json.pipe";
-import { AuthGuard } from "../auth/auth.guard";
+import { ParseJsonPipe } from '../common/utils/parse-json.pipe';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('goods')
 @UseGuards(AuthGuard)
@@ -16,7 +26,7 @@ export class GoodsController {
   }
 
   @Get()
-  getList(
+  async getList(
     @Query('sort', ParseJsonPipe) sort,
     @Query('range', ParseJsonPipe) range,
     @Query('filter', ParseJsonPipe) filter,
@@ -32,23 +42,20 @@ export class GoodsController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateGoodDto: UpdateGoodDto
-  ) {
+  update(@Param('id') id: string, @Body() updateGoodDto: UpdateGoodDto) {
     return this.goodsService.update(id, updateGoodDto);
   }
 
   @Patch()
   updateMany(
     @Query('filter', ParseJsonPipe) filter: { ids: string[] },
-    @Body() updateGoodDto: UpdateGoodDto
+    @Body() updateGoodDto: UpdateGoodDto,
   ) {
     return this.goodsService.updateMany(filter.ids, updateGoodDto);
   }
 
   @Delete()
-  deleteMany(@Query('filter', ParseJsonPipe) filter: {ids: string[]}) {
+  deleteMany(@Query('filter', ParseJsonPipe) filter: { ids: string[] }) {
     return this.goodsService.deleteMany(filter.ids);
   }
 

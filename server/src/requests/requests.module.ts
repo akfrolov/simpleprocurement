@@ -1,11 +1,11 @@
-import { Module } from "@nestjs/common";
-import { RequestsService } from "./requests.service";
-import { RequestsController } from "./requests.controller";
-import { MongooseModule } from "@nestjs/mongoose";
+import { Module } from '@nestjs/common';
+import { RequestsService } from './requests.service';
+import { RequestsController } from './requests.controller';
+import { MongooseModule } from '@nestjs/mongoose';
 // import { Connection } from "mongoose";
-import { Request, RequestSchema } from "./requests.schema";
-import { AutoIncrementID } from "@typegoose/auto-increment";
-import { AuthModule } from "../auth/auth.module";
+import { Request, RequestSchema } from './requests.schema';
+import { AutoIncrementID } from '@typegoose/auto-increment';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   controllers: [RequestsController],
@@ -15,22 +15,22 @@ import { AuthModule } from "../auth/auth.module";
     MongooseModule.forFeatureAsync([
       {
         name: Request.name,
-        useFactory: (
+        useFactory: () =>
           // connection: Connection
-        ) => {
-          const schema = RequestSchema;
+          {
+            const schema = RequestSchema;
 
-          // const AutoIncrement = AutoIncrementFactory(connection);
-          schema.plugin(AutoIncrementID, {
-            field: "_identifier"
-          });
+            // const AutoIncrement = AutoIncrementFactory(connection);
+            schema.plugin(AutoIncrementID, {
+              field: '_identifier',
+            });
 
-          return schema;
-        }
+            return schema;
+          },
         // inject: [getConnectionToken()]
-      }
-    ])
-  ]
+      },
+    ]),
+  ],
+  exports: [MongooseModule],
 })
-export class RequestsModule {
-}
+export class RequestsModule {}

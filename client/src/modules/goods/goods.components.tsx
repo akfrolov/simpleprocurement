@@ -16,22 +16,23 @@ import {
   Toolbar,
   DeleteButton,
   Button,
-  Link, required, ImageInput, ImageField
+  Link, required, ImageInput, ImageField, usePermissions
 } from "react-admin";
 import RequestIcon from "@mui/icons-material/RequestQuote";
 import Stack from "@mui/material/Stack";
 import React from "react";
 import {styled} from "@mui/material/styles";
 import {Box} from "@mui/material";
+import {localStorageKey} from "../../common/utils/auth-provider";
 
 const goodsFilters = [
   <TextInput source="search" label="Поиск" alwaysOn/>,
-  <ReferenceInput source="requestId" reference="requests" label={'Заявка'}>
+  <ReferenceInput source="request" reference="requests" label={'Заявка'}>
     <AutocompleteInput label="Заявка" />
   </ReferenceInput>,
 ];
 
-const ListImage = () => {
+export const ListImage = () => {
   const { images } = useRecordContext();
   return images.length > 0 ?
     <StyledBox>
@@ -61,7 +62,14 @@ const StyledBox = styled(Box, {
 });
 
 export const GoodsList = () => {
-  return <List filters={goodsFilters}>
+  const { permissions } = usePermissions();
+  const localData = localStorage.getItem(localStorageKey);
+  const identity = JSON.parse(localData!);
+
+  return <List
+    filters={goodsFilters}
+    filter={permissions === "manager" ? { initiator: identity.id } : undefined}
+  >
     <Datagrid rowClick="edit">
       <ListImage/>
       {/*<ImageField  source="images" src={"src"} title={"title"} label={"Изображения"} />*/}
@@ -122,10 +130,10 @@ export const GoodsForm = () => {
     </ImageInput>
     <TextInput source="title" label={"Название"} required />
     <NumberInput source="quantity" label={"Кол-во"} required />
-    <TextInput source="units" label={"Ед. изм."} required/>
-    <TextInput source="notes" label={"Заметки"} required/>
+    <TextInput source="units" label={"Ед. изм."} />
+    <TextInput source="notes" label={"Заметки"} multiline />
     <NumberInput source="stockQuantity" label={"Кол-во на складе"} />
-    <ReferenceInput source="request" reference="requests" label={"Заявка"} >
+    <ReferenceInput source="request" reference="requests" label={"Заявка"}>
       <AutocompleteInput label="Заявка"  validate={required()}/>
     </ReferenceInput>
   </SimpleForm>

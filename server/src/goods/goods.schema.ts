@@ -1,6 +1,7 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { HydratedDocument } from "mongoose";
-import { Request } from "../requests/requests.schema";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { Request } from '../requests/requests.schema';
+import { User } from '../users/users.schema';
 
 export type GoodDocument = HydratedDocument<Good>;
 
@@ -10,7 +11,7 @@ export class Good {
   title: string;
 
   @Prop([{ src: String, title: String }])
-  images: [{ src: string, title: string }];
+  images: [{ src: string; title: string }];
 
   @Prop()
   quantity: number;
@@ -24,26 +25,29 @@ export class Good {
   @Prop()
   stockQuantity: number;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Request" })
+  // @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  // initiator: User;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Request' })
   // @Prop()
   request: Request;
 }
 
 const GoodSchema = SchemaFactory.createForClass(Good);
 
-// Duplicate the ID field.
-GoodSchema.virtual('id').get(function(){
-  return this._id.toHexString();
-});
-
 // Ensure virtual fields are serialised.
 GoodSchema.set('toJSON', {
-  virtuals: true
+  virtuals: true,
 });
 
 // Ensure virtual fields are serialised.
 GoodSchema.set('toObject', {
-  virtuals: true
+  virtuals: true,
 });
 
-export {GoodSchema}
+// Duplicate the ID field.
+GoodSchema.virtual('id').get(function () {
+  return this._id.toHexString();
+});
+
+export { GoodSchema };
