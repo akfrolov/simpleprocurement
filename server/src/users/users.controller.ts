@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ParseJsonPipe } from "../common/utils/parse-json.pipe";
-import { AuthGuard } from "../auth/auth.guard";
+import { ParseJsonPipe } from '../common/utils/parse-json.pipe';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -32,23 +42,20 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto
-  ) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Patch()
   updateMany(
     @Query('filter', ParseJsonPipe) filter: { ids: string[] },
-    @Body() updateUserDto: UpdateUserDto
+    @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.updateMany(filter.ids, updateUserDto);
   }
 
   @Delete()
-  deleteMany(@Query('filter', ParseJsonPipe) filter: {ids: string[]}) {
+  deleteMany(@Query('filter', ParseJsonPipe) filter: { ids: string[] }) {
     return this.usersService.deleteMany(filter.ids);
   }
 

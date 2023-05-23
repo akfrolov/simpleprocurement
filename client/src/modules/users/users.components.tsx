@@ -9,12 +9,46 @@ import {
   NumberInput,
   SimpleForm,
   TextInput,
-  Create, useRecordContext, ReferenceInput, SelectField, SelectInput, PasswordInput,
+  Create, useRecordContext, ReferenceInput, SelectField, SelectInput, PasswordInput, downloadCSV,
 } from "react-admin";
-import {departments, roles} from "../../common/utils/select";
+import {departments, roles, statuses} from "../../common/utils/select";
+import jsonExport from "jsonexport/dist";
+
+async function exporter (
+  records: Record<string, any>[],
+  fetchRelatedRecords: (
+    data: any,
+    field: string,
+    resource: string
+  ) => Promise<any>) {
+  records = records.map(record => {
+    record.department = departments.find(department => department.id === record.department)?.name;
+    record.role = roles.find(role => role.id === record.role)?.name;
+
+    delete record._id;
+    delete record.__v;
+
+    return record;
+  });
+
+  const columns = new Map([
+    ['id', "ID"],
+    ['name', "Имя"],
+    ['email', 'Почта'],
+    ['role', 'Роль'],
+    ['department', "Отдел"],
+  ])
+
+  jsonExport(records, {
+    headers: Array.from(columns.keys()),
+    rename: Array.from(columns.values()),
+  }, (err, csv) => {
+    downloadCSV(csv, 'users');
+  });
+};
 
 export const UserList = () => (
-  <List filters={postFilters} title={"Пользователи"}>
+  <List exporter={exporter} filters={postFilters} title={"Пользователи"}>
     <Datagrid rowClick="edit">
       {/*<TextField source="id" />*/}
       <TextField source="name" label={"Имя"}/>

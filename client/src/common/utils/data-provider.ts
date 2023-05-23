@@ -6,7 +6,7 @@ import {
   GetListParams,
   GetManyParams,
   GetManyReferenceParams,
-  GetOneParams,
+  GetOneParams, HttpError,
   UpdateManyParams,
   UpdateParams
 } from "react-admin";
@@ -15,6 +15,10 @@ import { AuthResponse, localStorageKey, rejectAuth } from "./auth-provider";
 
 const apiUrl = import.meta.env.PROD ? "https://scs.com.kz/api" : "http://localhost:3000/api";
 const httpClient = fetchUtils.fetchJson;
+
+export function handleServerError() {
+  return Promise.reject(new HttpError("Ошибка сервера", 401));
+}
 
 function getAuthHeader() {
   const payload = localStorage.getItem(localStorageKey);
@@ -81,7 +85,7 @@ export default {
         console.log(e);
       }
     }
-    // return rejectAuth();
+    return handleServerError();
   },
 
   getOne: async (resource: string, params: GetOneParams) => {
@@ -97,7 +101,7 @@ export default {
         data: json
       };
     }
-    // return rejectAuth();
+    return handleServerError();
   },
 
   getMany: async (resource: string, params: GetManyParams) => {
@@ -113,7 +117,7 @@ export default {
       });
       return { data: json };
     }
-    // return rejectAuth();
+    return handleServerError();
   },
 
   getManyReference: async (resource: string, params: GetManyReferenceParams) => {
@@ -138,7 +142,7 @@ export default {
       });
       return json;
     }
-    // return rejectAuth();
+    return handleServerError();
     //   {
     //   data: json,
     //   total: parseInt(headers.get("content-range").split("/").pop(), 10)
@@ -165,7 +169,7 @@ export default {
         data: { ...params.data, id: json.id }
       };
     }
-    // return rejectAuth();
+    return handleServerError();
   },
 
   update: async (resource: string, params: UpdateParams) => {
@@ -185,7 +189,7 @@ export default {
       });
       return { data: json };
     }
-    // return rejectAuth();
+    return handleServerError();
   },
 
   updateMany: async (resource: string, params: UpdateManyParams) => {
@@ -202,7 +206,7 @@ export default {
       });
       return { data: json };
     }
-    // return rejectAuth();
+    return handleServerError();
   },
 
   delete: async (resource: string, params: DeleteParams) => {
@@ -215,7 +219,7 @@ export default {
       });
       return { data: json };
     }
-    // return rejectAuth();
+    return handleServerError();
   },
 
   deleteMany: async (resource: string, params: DeleteManyParams) => {
@@ -232,6 +236,6 @@ export default {
       });
       return { data: json };
     }
-    // return rejectAuth();
+    return handleServerError();
   }
 };

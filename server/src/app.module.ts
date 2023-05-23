@@ -28,8 +28,8 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', 'public'),
       serveStaticOptions: {
         // true for serving client in production
-        // index: 'index.html',
-        index: false,
+        index: 'index.html',
+        // index: false,
       },
     }),
     AuthModule,

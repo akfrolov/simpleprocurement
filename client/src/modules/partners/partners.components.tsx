@@ -1,6 +1,6 @@
 import {
   Create,
-  Datagrid, Edit,
+  Datagrid, downloadCSV, Edit,
   List,
   PasswordInput,
   SelectInput,
@@ -10,10 +10,42 @@ import {
   TextInput,
   useRecordContext
 } from 'react-admin';
-import {departments, roles} from "../../common/utils/select";
+import {departments, roles, statuses} from "../../common/utils/select";
+import jsonExport from "jsonexport/dist";
+
+async function exporter (
+  records: Record<string, any>[],
+  fetchRelatedRecords: (
+    data: any,
+    field: string,
+    resource: string
+  ) => Promise<any>) {
+
+
+  records = records.map(record => {
+    delete record._id;
+    delete record.__v;
+
+    return record;
+  });
+
+  const columns = new Map([
+    ['id', "ID"],
+    ['title', "Название"],
+    ['contacts', 'Контакты'],
+    ['rep', 'Представитель'],
+  ])
+
+  jsonExport(records, {
+    headers: Array.from(columns.keys()),
+    rename: Array.from(columns.values()),
+  }, (err, csv) => {
+    downloadCSV(csv, 'partners');
+  });
+};
 
 export const PartnerList = () => (
-  <List title={'Партнеры'} filters={partnerFilters}>
+  <List exporter={exporter} title={'Партнеры'} filters={partnerFilters}>
     <SimpleList
       primaryText={(record) => record.title}
       secondaryText={(record) => record.rep}

@@ -5,7 +5,7 @@ import {
   Create,
   Datagrid,
   DateField,
-  DateInput,
+  DateInput, downloadCSV,
   Edit,
   EditButton,
   Link,
@@ -35,12 +35,67 @@ import AddIcon from "@mui/icons-material/Add";
 import {departments, statuses} from "../../common/utils/select";
 import {localStorageKey} from "../../common/utils/auth-provider";
 import {ListImage} from "../goods/goods.components";
+import jsonExport from "jsonexport/dist";
+
+async function exporter (
+  records: Record<string, any>[],
+  fetchRelatedRecords: (
+    data: any,
+    field: string,
+    resource: string
+  ) => Promise<any>) {
+
+  const initiators = await fetchRelatedRecords(records, 'initiator', 'users');
+  const suppliers = await fetchRelatedRecords(records, 'supplier', 'partners');
+
+  records = records.map(record => {
+    if (initiators[record.initiator]) {
+      record.initiator = initiators[record.initiator].name;
+    }
+
+    if (suppliers[record.supplier]) {
+      record.supplier = suppliers[record.supplier].title;
+    }
+
+    record.department = departments.find(department => department.id === record.department)?.name;
+    record.status = statuses('all').find(status => status.id === record.status)?.name;
+
+    delete record._id;
+    delete record._identifier;
+    delete record.__v;
+
+    return record;
+  });
+
+  const columns = new Map([
+    ['id', "ID"],
+    ['identifier', "Идентификатор"],
+    ['title', 'Наименование'],
+    ['shortDescription', 'Краткое описание'],
+    ['status', 'Статус'],
+    ['issueDate', "Дата выпуска"],
+    ['deliveryPlanned', "Планируемая дата поставки"],
+    ['initiator', 'Инициатор'],
+    ['orderQuantity', "Кол-во заказано"],
+    ['project', "Проект"],
+    ['department', "Отдел"],
+    ['supplier', "Поставщик"],
+  ])
+
+  jsonExport(records, {
+    headers: Array.from(columns.keys()),
+    rename: Array.from(columns.values()),
+  }, (err, csv) => {
+    downloadCSV(csv, 'requests');
+  });
+};
 
 export const RequestList = () => {
   const {permissions} = usePermissions();
   const localData = localStorage.getItem(localStorageKey);
   const identity = JSON.parse(localData!);
   return <List
+    exporter={exporter}
     title={<RequestTitle/>}
     filters={requestFilters(permissions)}
     filter={permissions === "manager" ? {initiator: identity.id} : undefined}
